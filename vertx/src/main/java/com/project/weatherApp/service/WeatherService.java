@@ -11,4 +11,9 @@ public interface WeatherService {
   // public CompletableFuture<String> fetch(HttpServerRequest request,String lat, String lon) throws InterruptedException;
 //  Future<String> fetch(String lat, String lon) throws InterruptedException;
   Single<HttpResponse<JsonObject>> fetch(String lat, String lon);
+  Single<String> update(String lat, String lon, JsonObject data);
+
+  Single<String> insert(JsonObject data);
+
+  Single<String> search(String lat, String lon);
 }

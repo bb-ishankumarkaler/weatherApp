@@ -28,14 +28,14 @@ public class Controller implements Handler<HttpServerRequest> {
 
   @Override
   public void handle(HttpServerRequest request) {
+    assert request != null;
+    String lat = EncodeUtil.getParam(request, "lat");
+    String lon = EncodeUtil.getParam(request, "lon");
+    assert lat != null;
+    assert lon != null;
     if (request.method() == HttpMethod.GET) {
-      MultiMap params = request.params();
-      System.out.println(params.toString());
-      String lat = params.get("lat");
-      String lon = params.get("lon");
-      System.out.printf("(lat, lon) = %s, %s", lat, lon);
       if (request.absoluteURI().contains("search")) {
-        weatherDal.search(lat, lon).subscribe(res -> {
+        weatherService.search(lat, lon).subscribe(res -> {
           System.out.println(res);
           request.response().end(res);
         }, Throwable::printStackTrace);
@@ -45,18 +45,13 @@ public class Controller implements Handler<HttpServerRequest> {
       }
     } else if (request.method() == HttpMethod.POST) {
       request.body(ctx -> {
-        weatherDal.insert(ctx.result().toJsonObject()).subscribe(res -> {
+        weatherService.insert(ctx.result().toJsonObject()).subscribe(res -> {
           request.response().end(res);
         }, Throwable::printStackTrace);
       });
     } else if (request.method() == HttpMethod.PUT) {
-      MultiMap params = request.params();
-      System.out.println(params.toString());
-      String lat = params.get("lat");
-      String lon = params.get("lon");
-      System.out.printf("(lat, lon) = %s, %s", lat, lon);
       request.body(ctx -> {
-        weatherDal.update(lat, lon, ctx.result().toJsonObject()).subscribe(res -> {
+        weatherService.update(lat, lon, ctx.result().toJsonObject()).subscribe(res -> {
           request.response().end(res);
         }, Throwable::printStackTrace);
       });

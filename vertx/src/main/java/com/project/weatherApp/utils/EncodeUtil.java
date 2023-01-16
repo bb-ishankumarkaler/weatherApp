@@ -2,25 +2,32 @@ package com.project.weatherApp.utils;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import io.vertx.reactivex.core.MultiMap;
+import io.vertx.reactivex.core.http.HttpServerRequest;
 import io.vertx.reactivex.sqlclient.Row;
 import io.vertx.reactivex.sqlclient.RowSet;
 
+import java.security.PublicKey;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class EncodeUtil {
+  public static String getParam(HttpServerRequest request, String param){
+    assert request != null;
+    return (request.params() == null) ? null : request.params().get(param);
+  }
   public static String rowSetToString(RowSet<Row> rSet) {
+    assert rSet != null;
     JsonArray jsonArray = new JsonArray();
     for (Row row : rSet) {
       JsonObject jsonObject = row.toJson();
       jsonArray.add(jsonObject);
     }
-    System.out.println(jsonArray);
     if (jsonArray.size() > 0) return jsonArray.getJsonObject(0).encodePrettily();
     else return jsonArray.encodePrettily();
   }
-
   public static JsonObject extractFeaturesJson(JsonObject object) {
+    assert object != null;
     LinkedHashMap<String, String> mp = getDataMap(object);
     return mapToJson(mp);
   }

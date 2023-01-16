@@ -1,12 +1,9 @@
-package com.project.weatherApp.di;
+package com.project.weatherApp.dal;
 
 import io.github.cdimascio.dotenv.Dotenv;
-import io.reactivex.Single;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.mysqlclient.MySQLConnectOptions;
 import io.vertx.reactivex.mysqlclient.MySQLPool;
-import io.vertx.reactivex.sqlclient.Row;
-import io.vertx.reactivex.sqlclient.RowSet;
 import io.vertx.sqlclient.PoolOptions;
 import io.vertx.reactivex.sqlclient.SqlClient;
 
@@ -36,10 +33,7 @@ public class MySqlConnection {
 
     poolOptions = new PoolOptions().setMaxSize(5);
   }
-
-  public Single<RowSet<Row>> query(String queryString) {
-    SqlClient sqlClient = MySQLPool.client(vertx, connectOptions, poolOptions);
-    System.out.println(queryString);
-    return sqlClient.query(queryString).rxExecute();
+  public SqlClient getClient(){
+    return MySQLPool.client(vertx, connectOptions, poolOptions);
   }
 }
