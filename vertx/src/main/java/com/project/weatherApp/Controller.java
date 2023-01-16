@@ -1,59 +1,65 @@
 package com.project.weatherApp;
 
+import com.project.weatherApp.dal.WeatherDal;
+import com.project.weatherApp.dal.WeatherDalImpl;
 import com.project.weatherApp.service.WeatherService;
 import com.project.weatherApp.service.WeatherServiceImpl;
-import io.vertx.core.*;
+import io.vertx.core.Handler;
+import io.vertx.reactivex.core.MultiMap;
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.http.HttpServerRequest;
-import io.vertx.ext.web.Router;
+import io.vertx.reactivex.core.Vertx;
+import io.vertx.reactivex.core.http.HttpServerRequest;
+import com.project.weatherApp.utils.EncodeUtil;
+import io.vertx.reactivex.ext.web.Router;
+import io.vertx.reactivex.ext.web.client.WebClient;
+import io.vertx.reactivex.ext.web.codec.BodyCodec;
+import rx.Single;
 
 public class Controller implements Handler<HttpServerRequest> {
   Vertx vertx;
-  Router router;
-  WeatherService service;
-  Controller(Vertx vertx){
+  WeatherService weatherService;
+  WeatherDal weatherDal;
+
+  Controller(Vertx vertx) {
     this.vertx = vertx;
-    router = Router.router(vertx);
-    service = new WeatherServiceImpl(vertx);
+    weatherService = new WeatherServiceImpl(vertx);
+    weatherDal = new WeatherDalImpl(vertx);
   }
+
   @Override
   public void handle(HttpServerRequest request) {
     if (request.method() == HttpMethod.GET) {
-      System.out.println("Get method received");
       MultiMap params = request.params();
       System.out.println(params.toString());
       String lat = params.get("lat");
       String lon = params.get("lon");
       System.out.printf("(lat, lon) = %s, %s", lat, lon);
-      try {
-        service.fetch(lat, lon)
-          .onSuccess(res -> {
-            request.response().end(res);
-          })
-          .onFailure(res -> {
-            request.response().setStatusCode(400).end(res.getMessage());
-          });
-      } catch (InterruptedException e) {
-        request.response().setStatusCode(404).end(e.getMessage());
+      if (request.absoluteURI().contains("search")) {
+        weatherDal.search(lat, lon).subscribe(res -> {
+          System.out.println(res);
+          request.response().end(res);
+        }, Throwable::printStackTrace);
+      } else {
+        weatherService.fetch(lat, lon).subscribe(res -> request.response().end(EncodeUtil.extractFeaturesJson(res.body()).encodePrettily())
+          , Throwable::printStackTrace);
       }
-//      System.out.println(request.body().onSuccess(System.out::println));
-//      try {
-//        service.fetch(request, lat, lon);
-//      } catch (Exception e) {
-//        System.out.println("Exception" + e.getMessage());
-//      }
-    }
-    else if (request.method() == HttpMethod.POST){
-     service.job().onSuccess(res -> {
-       System.out.println(res + " OK!!");
-       request.response().end(res);
-     })
-     .onFailure(res -> {
-       System.out.println("Failed promise job!!");
-     });
-    }
-    else if (request.method() == HttpMethod.PUT){
-      request.response().end("PUT");
+    } else if (request.method() == HttpMethod.POST) {
+      request.body(ctx -> {
+        weatherDal.insert(ctx.result().toJsonObject()).subscribe(res -> {
+          request.response().end(res);
+        }, Throwable::printStackTrace);
+      });
+    } else if (request.method() == HttpMethod.PUT) {
+      MultiMap params = request.params();
+      System.out.println(params.toString());
+      String lat = params.get("lat");
+      String lon = params.get("lon");
+      System.out.printf("(lat, lon) = %s, %s", lat, lon);
+      request.body(ctx -> {
+        weatherDal.update(lat, lon, ctx.result().toJsonObject()).subscribe(res -> {
+          request.response().end(res);
+        }, Throwable::printStackTrace);
+      });
     }
   }
 }

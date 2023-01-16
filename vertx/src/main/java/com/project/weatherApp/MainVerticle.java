@@ -1,6 +1,6 @@
 package com.project.weatherApp;
 
-import io.vertx.core.AbstractVerticle;
+import io.vertx.reactivex.core.AbstractVerticle;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpMethod;
@@ -16,7 +16,9 @@ import io.vertx.mysqlclient.MySQLPool;
 import io.vertx.sqlclient.Row;
 import io.vertx.sqlclient.RowSet;
 import io.vertx.sqlclient.SqlClient;
+
 import java.util.LinkedHashMap;
+
 import io.github.cdimascio.dotenv.Dotenv;
 
 // :: table columns -> id(pri) name lat lon country_code weather temperature
@@ -26,7 +28,24 @@ public class MainVerticle extends AbstractVerticle {
   // TODO: key storage
   private String API_KEY;
 
-  // private JsonObject globalJson;
+  @Override
+  public void start(Promise<Void> startPromise) throws Exception {
+    Controller controller = new Controller(vertx);
+    vertx.createHttpServer().requestHandler(controller).listen(8080, httpServerAsyncResult -> {
+      if (httpServerAsyncResult.succeeded()) {
+        System.out.println("Starting server at port 8080");
+        startPromise.complete();
+      } else {
+        startPromise.fail("Http server start failed: " + httpServerAsyncResult.cause());
+      }
+    });
+
+
+    /*
+    IGNORE THE BELOW CODE FOR NOw
+    */
+
+    // private JsonObject globalJson;
 //  public JsonObject fetch(String requestUrl){
 //    WebClient client2 = WebClient.create(vertx);
 //    client2.get(url, requestUrl)
@@ -42,24 +61,6 @@ public class MainVerticle extends AbstractVerticle {
 //      });
 //    return new JsonObject();
 //  }
-
-  @Override
-  public void start(Promise<Void> startPromise) throws Exception {
-    Controller controller = new Controller(vertx);
-    vertx.createHttpServer().requestHandler(controller).listen(8080, httpServerAsyncResult -> {
-      if (httpServerAsyncResult.succeeded()){
-        System.out.println("Starting server at port 8080");
-        startPromise.complete();
-      }
-      else{
-        startPromise.fail("Http server start failed: " + httpServerAsyncResult.cause());
-      }
-    });
-
-
-    /*
-    IGNORE THE BELOW CODE FOR NOw
-    */
 
 //    Router router = Router.router(vertx);
 //    WebClient client = WebClient.create(vertx);
