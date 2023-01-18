@@ -20,11 +20,18 @@ public class WeatherServiceImpl implements WeatherService{
     this.vertx = vertx;
     dal = new WeatherDalImpl(vertx);
   }
-
+  @Override
+  public WebClient getWebClient(Vertx vertx){
+    return WebClient.create(vertx);
+  }
+  @Override
+  public String getFetchURI(String lat, String lon){
+    return String.format("/data/2.5/weather?lat=%s&lon=%s&appid=bf8e8cbe2b49324b1be3c9e9b6170d1b", lat, lon);
+  }
   @Override
   public Single<HttpResponse<JsonObject>> fetch(String lat, String lon){
-    WebClient webClient = WebClient.create(vertx);
-    String requestURI = String.format("/data/2.5/weather?lat=%s&lon=%s&appid=bf8e8cbe2b49324b1be3c9e9b6170d1b", lat, lon);
+    WebClient webClient = getWebClient(vertx);
+    String requestURI = getFetchURI(lat, lon);
     return webClient.get("api.openweathermap.org", requestURI).as(BodyCodec.jsonObject()).rxSend();
   }
   @Override
@@ -42,6 +49,7 @@ public class WeatherServiceImpl implements WeatherService{
     String insertQuery = String.format("INSERT INTO weather VALUES (%s, '%s', %s, %s, '%s', '%s', %s)", dataMap.get("id"), dataMap.get("name"),
       dataMap.get("lat"), dataMap.get("lon"), dataMap.get("country_code"), dataMap.get("weather"), dataMap.get("temp"));
     return dal.query(insertQuery).map(EncodeUtil::rowSetToString);
+
   }
 
   @Override

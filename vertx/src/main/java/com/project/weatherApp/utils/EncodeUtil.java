@@ -2,12 +2,10 @@ package com.project.weatherApp.utils;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.reactivex.core.MultiMap;
 import io.vertx.reactivex.core.http.HttpServerRequest;
 import io.vertx.reactivex.sqlclient.Row;
 import io.vertx.reactivex.sqlclient.RowSet;
 
-import java.security.PublicKey;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -17,7 +15,8 @@ public class EncodeUtil {
     return (request.params() == null) ? null : request.params().get(param);
   }
   public static String rowSetToString(RowSet<Row> rSet) {
-    assert rSet != null;
+    assert rSet != null : "rowSetToString(null rSet)";
+    System.out.println(rSet);
     JsonArray jsonArray = new JsonArray();
     for (Row row : rSet) {
       JsonObject jsonObject = row.toJson();
@@ -32,10 +31,8 @@ public class EncodeUtil {
     return mapToJson(mp);
   }
 
-  public static LinkedHashMap<String, String> getDataMapFromRequestJson(JsonObject jsonBody) throws IllegalArgumentException {
-    if (jsonBody == null) {
-      throw new IllegalArgumentException("Null request Json object found");
-    }
+  public static LinkedHashMap<String, String> getDataMapFromRequestJson(JsonObject jsonBody){
+    assert jsonBody != null;
     LinkedHashMap<String, String> dataMap = new LinkedHashMap<String, String>();
     dataMap.put("id", jsonBody.getString("id"));
     dataMap.put("name", jsonBody.getString("name"));
@@ -47,11 +44,9 @@ public class EncodeUtil {
     return dataMap;
   }
 
-  public static LinkedHashMap<String, String> getDataMap(JsonObject jsonBody) throws IllegalArgumentException {
+  public static LinkedHashMap<String, String> getDataMap(JsonObject jsonBody) {
+    assert jsonBody != null;
     System.out.println("Json body to map: " + jsonBody.toString());
-    if (jsonBody == null) {
-      throw new IllegalArgumentException("Null Json object found");
-    }
     // search for raw data types java
     LinkedHashMap<String, String> dataMap = new LinkedHashMap<String, String>();
     // Get data fields fron JSON
@@ -65,10 +60,8 @@ public class EncodeUtil {
     return dataMap;
   }
 
-  public static JsonObject mapToJson(LinkedHashMap<String, String> dataMap) throws IllegalArgumentException {
-    if (dataMap == null) {
-      throw new IllegalArgumentException("Map is null");
-    }
+  public static JsonObject mapToJson(LinkedHashMap<String, String> dataMap){
+    assert dataMap != null;
     JsonObject json = new JsonObject();
     for (Map.Entry<String, String> entry : dataMap.entrySet()) {
       String key = entry.getKey();
