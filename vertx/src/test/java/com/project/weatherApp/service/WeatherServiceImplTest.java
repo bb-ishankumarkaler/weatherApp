@@ -90,4 +90,5 @@ class WeatherServiceImplTest {
     Single<String> value = weatherService.insert(jsonObject);
     Assertions.assertNotNull(value);
   }
+
 }

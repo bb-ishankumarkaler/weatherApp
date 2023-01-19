@@ -26,6 +26,8 @@ public class WeatherServiceImpl implements WeatherService{
   }
   @Override
   public String getFetchURI(String lat, String lon){
+    assert lat != null;
+    assert lon != null;
     return String.format("/data/2.5/weather?lat=%s&lon=%s&appid=bf8e8cbe2b49324b1be3c9e9b6170d1b", lat, lon);
   }
   @Override
@@ -49,7 +51,6 @@ public class WeatherServiceImpl implements WeatherService{
     String insertQuery = String.format("INSERT INTO weather VALUES (%s, '%s', %s, %s, '%s', '%s', %s)", dataMap.get("id"), dataMap.get("name"),
       dataMap.get("lat"), dataMap.get("lon"), dataMap.get("country_code"), dataMap.get("weather"), dataMap.get("temp"));
     return dal.query(insertQuery).map(EncodeUtil::rowSetToString);
-
   }
 
   @Override

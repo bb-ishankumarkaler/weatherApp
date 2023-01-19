@@ -20,6 +20,9 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import io.vertx.sqlclient.impl.*;
+
+import java.util.LinkedHashMap;
+
 class EncodeUtilTest {
   @Mock
   HttpServerRequest request;
@@ -45,6 +48,25 @@ class EncodeUtilTest {
     Assertions.assertEquals("IN", EncodeUtil.getDataMap(jsonObject).get("country_code"));
     Assertions.assertEquals("298.8", EncodeUtil.getDataMap(jsonObject).get("temp"));
     Assertions.assertEquals("clear", EncodeUtil.getDataMap(jsonObject).get("weather"));
+  }
+  @Test
+  public void testMapToJson(){
+    LinkedHashMap<String, String> map = new LinkedHashMap<>();
+    map.put("id", "1278609");
+    map.put("name", "Anekal");
+    map.put("lat", "77.1");
+    map.put("lon", "12.7");
+    map.put("country_code", "IN");
+    map.put("weather", "clear");
+    map.put("temp", "298.85");
+    Assertions.assertEquals("1278609", EncodeUtil.mapToJson(map).getString("id"));
+    Assertions.assertEquals("Anekal", EncodeUtil.mapToJson(map).getString("name"));
+    Assertions.assertEquals("77.1", EncodeUtil.mapToJson(map).getString("lat"));
+    Assertions.assertEquals("12.7", EncodeUtil.mapToJson(map).getString("lon"));
+    Assertions.assertEquals("IN", EncodeUtil.mapToJson(map).getString("country_code"));
+    Assertions.assertEquals("clear", EncodeUtil.mapToJson(map).getString("weather"));
+    Assertions.assertEquals("298.85", EncodeUtil.mapToJson(map).getString("temp"));
+
   }
   @Test
   public void testGetDataMapFromRequest(){

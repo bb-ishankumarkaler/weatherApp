@@ -42,7 +42,7 @@ public class TestMainVerticle {
     locations.add(new Pair(1.0, 2.0));
     locations.add(new Pair(3.0, 5.0));
     for (Pair<Float, Float> p:locations){
-      webClient.get(8080, "localhost", String.format("/data/%s/%s", p.getFirst(), p.getSecond())).send(testContext.succeeding(
+      webClient.get(8080, "localhost", String.format("/weatherApp/v1/weather?lat=%s&lon=%s", p.getFirst(), p.getSecond())).send(testContext.succeeding(
         resp -> {
           requestSent.flag();
           testContext.verify(() -> {
@@ -67,7 +67,7 @@ public class TestMainVerticle {
     locations.add(new Pair(1.0, 2.0));
     locations.add(new Pair(3.0, 5.0));
     for (Pair<Float, Float> p:locations){
-      webClient.put(8080, "localhost", String.format("/data/update/%s/%s", p.getFirst(), p.getSecond())).send(testContext.succeeding(
+      webClient.put(8080, "localhost", String.format("/weatherApp/v1/weather?lat=%s&lon=%s", p.getFirst(), p.getSecond())).send(testContext.succeeding(
         resp -> {
           requestSent.flag();
           testContext.verify(() -> {
