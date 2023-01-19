@@ -1,7 +1,8 @@
 package com.project.weatherApp.service;
 
 import com.project.weatherApp.dal.WeatherDal;
-import com.project.weatherApp.dal.WeatherDalImpl;
+import com.project.weatherApp.di.DaggerDepComponent;
+import com.project.weatherApp.di.DepComponent;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.ext.web.client.HttpResponse;
@@ -10,15 +11,19 @@ import io.vertx.reactivex.ext.web.codec.BodyCodec;
 import com.project.weatherApp.utils.EncodeUtil;
 import io.reactivex.Single;
 
-
+import javax.inject.Inject;
 import java.util.LinkedHashMap;
 
 public class WeatherServiceImpl implements WeatherService{
   Vertx vertx;
   WeatherDal dal;
+  @Inject
   public WeatherServiceImpl(Vertx vertx){
     this.vertx = vertx;
-    dal = new WeatherDalImpl(vertx);
+    DepComponent component = DaggerDepComponent.create();
+    dal = component.buildWeatherDalImpl();
+//    DepComponent component = new
+    // dal = new WeatherDalImpl(vertx);
   }
   @Override
   public WebClient getWebClient(Vertx vertx){

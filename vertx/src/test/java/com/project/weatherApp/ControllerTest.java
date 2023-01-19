@@ -4,20 +4,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.project.weatherApp.dal.WeatherDal;
 import com.project.weatherApp.service.WeatherService;
-import com.project.weatherApp.utils.EncodeUtil;
 import io.reactivex.Single;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.core.http.HttpServerRequest;
-import io.vertx.reactivex.core.streams.StreamBase;
 import kotlin.Pair;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import rx.internal.util.unsafe.MpmcArrayQueue;
-import rx.plugins.RxJavaPlugins;
 
 class ControllerTest {
 

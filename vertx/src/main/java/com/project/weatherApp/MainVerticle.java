@@ -1,25 +1,28 @@
 package com.project.weatherApp;
 
+import com.project.weatherApp.di.DaggerDepComponent;
+import com.project.weatherApp.di.DepComponent;
 import io.vertx.reactivex.core.AbstractVerticle;
-import io.vertx.core.AsyncResult;
 import io.vertx.core.Promise;
-import io.vertx.core.http.HttpMethod;
-import io.vertx.core.json.DecodeException;
-import io.vertx.core.json.Json;
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.Router;
-import io.vertx.ext.web.client.WebClient;
-import io.vertx.mysqlclient.MySQLConnectOptions;
-import io.vertx.sqlclient.PoolOptions;
-import io.vertx.mysqlclient.MySQLPool;
-import io.vertx.sqlclient.Row;
-import io.vertx.sqlclient.RowSet;
-import io.vertx.sqlclient.SqlClient;
 
-import java.util.LinkedHashMap;
-
-import io.github.cdimascio.dotenv.Dotenv;
+// TODO: Find if we really need commented code(and perhaps commented imports) anymore :)
+// Commented code Imports
+//import io.vertx.core.AsyncResult;
+//import io.vertx.core.http.HttpMethod;
+//import io.vertx.core.json.DecodeException;
+//import io.vertx.core.json.Json;
+//import io.vertx.core.json.JsonArray;
+//import io.vertx.core.json.JsonObject;
+//import io.vertx.ext.web.Router;
+//import io.vertx.ext.web.client.WebClient;
+//import io.vertx.mysqlclient.MySQLConnectOptions;
+//import io.vertx.sqlclient.PoolOptions;
+//import io.vertx.mysqlclient.MySQLPool;
+//import io.vertx.sqlclient.Row;
+//import io.vertx.sqlclient.RowSet;
+//import io.vertx.sqlclient.SqlClient;
+//import java.util.LinkedHashMap;
+//import io.github.cdimascio.dotenv.Dotenv;
 
 // :: table columns -> id(pri) name lat lon country_code weather temperature
 
@@ -30,7 +33,9 @@ public class MainVerticle extends AbstractVerticle {
 
   @Override
   public void start(Promise<Void> startPromise) throws Exception {
-    Controller controller = new Controller(vertx);
+    DepComponent component = DaggerDepComponent.create();
+    Controller controller = component.buildController();
+    // Controller controller = new Controller(vertx);
     vertx.createHttpServer().requestHandler(controller).listen(8080, httpServerAsyncResult -> {
       if (httpServerAsyncResult.succeeded()) {
         System.out.println("Starting server at port 8080");

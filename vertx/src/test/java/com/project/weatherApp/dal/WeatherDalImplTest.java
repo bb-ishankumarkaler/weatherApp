@@ -47,17 +47,7 @@ public class WeatherDalImplTest {
     Mockito.when(query.rxExecute()).thenReturn(Single.just(rowSet)); /*Custom rowSet to test, like maybe new RowSet<Row>(8))*/
     Single<RowSet<Row>> value = weatherDal.query("SELECT * FROM weather");
     System.out.println("test query rows");
-
-    // this doesn't output anything, should give 8
-    new WeatherDalImpl(Vertx.vertx()).query("SELECT * FROM weather").subscribe(result -> {
-      System.out.println(result.size());
-    }, Throwable::printStackTrace);
-    // this neither, should give 8
-    new MySqlConnection(Vertx.vertx()).getClient().query("SELECT * FROM weather").rxExecute().subscribe(result -> {
-      System.out.println(result.size());
-    }, Throwable::printStackTrace);
-
-     Assertions.assertNotNull(value);
+    Assertions.assertNotNull(value);
 
   }
   @Test

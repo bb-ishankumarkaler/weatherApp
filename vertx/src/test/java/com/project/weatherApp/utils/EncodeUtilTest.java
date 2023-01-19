@@ -6,20 +6,14 @@ import io.vertx.core.http.impl.headers.HeadersMultiMap;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.MultiMap;
-import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.core.http.HttpServerRequest;
-import io.vertx.reactivex.sqlclient.Row;
-import io.vertx.reactivex.sqlclient.RowSet;
-import io.vertx.reactivex.sqlclient.SqlResult;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import io.vertx.sqlclient.impl.*;
 
 import java.util.LinkedHashMap;
 
@@ -85,7 +79,6 @@ class EncodeUtilTest {
     Assertions.assertEquals("IN", EncodeUtil.getDataMapFromRequestJson(jsonObject).get("country_code"));
     Assertions.assertEquals("clear", EncodeUtil.getDataMapFromRequestJson(jsonObject).get("weather"));
     Assertions.assertEquals("298.85", EncodeUtil.getDataMapFromRequestJson(jsonObject).get("temp"));
-
   }
   @Test
   public void testGetParamNullCheck(){

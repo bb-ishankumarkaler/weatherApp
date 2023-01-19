@@ -46,7 +46,7 @@ public class EncodeUtil {
 
   public static LinkedHashMap<String, String> getDataMap(JsonObject jsonBody) {
     assert jsonBody != null;
-    System.out.println("Json body to map: " + jsonBody.toString());
+    System.out.println("Json body to map: " + jsonBody);
     // search for raw data types java
     LinkedHashMap<String, String> dataMap = new LinkedHashMap<String, String>();
     // Get data fields fron JSON

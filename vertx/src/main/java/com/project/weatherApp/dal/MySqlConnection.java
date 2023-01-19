@@ -7,22 +7,19 @@ import io.vertx.reactivex.mysqlclient.MySQLPool;
 import io.vertx.sqlclient.PoolOptions;
 import io.vertx.reactivex.sqlclient.SqlClient;
 
+import javax.inject.Inject;
+
 public class MySqlConnection {
   Dotenv dotenv;
   Vertx vertx;
   MySQLConnectOptions connectOptions;
   PoolOptions poolOptions;
 
-  public void load_env() {
+  public void init() {
     dotenv = Dotenv.configure()
       .directory("/home/ishankumark/Documents/code/vertx/src/main/resources")
       .filename("env")
       .load();
-  }
-
-  public MySqlConnection(Vertx vertx) {
-    this.vertx = vertx;
-    load_env();
     connectOptions = new MySQLConnectOptions()
       .setPort(dotenv.get("SQL_PORT") == null ? 3306 : Integer.parseInt(dotenv.get("SQL_PORT")))
       .setHost(dotenv.get("SQL_HOST"))
@@ -32,6 +29,16 @@ public class MySqlConnection {
       .setConnectTimeout(dotenv.get("SQL_TIMEOUT") == null ? 3000 : Integer.parseInt(dotenv.get("SQL_TIMEOUT")));
 
     poolOptions = new PoolOptions().setMaxSize(5);
+  }
+
+  @Inject
+  public MySqlConnection(Vertx vertx) {
+    this.vertx = vertx;
+    init();
+  }
+  public MySqlConnection() {
+    this.vertx = Vertx.currentContext().owner();
+    init();
   }
   public SqlClient getClient(){
     return MySQLPool.client(vertx, connectOptions, poolOptions);
