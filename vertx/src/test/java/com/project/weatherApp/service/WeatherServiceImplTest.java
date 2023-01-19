@@ -3,7 +3,10 @@ package com.project.weatherApp.service;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.project.weatherApp.dal.WeatherDal;
+import com.project.weatherApp.di.DaggerDepComponent;
+import com.project.weatherApp.di.DepComponent;
 import com.project.weatherApp.utils.EncodeUtil;
+import dagger.Component;
 import io.reactivex.Single;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.buffer.Buffer;
@@ -56,7 +59,10 @@ class WeatherServiceImplTest {
   @BeforeEach
   public void setup() throws IllegalAccessException {
     MockitoAnnotations.openMocks(this);
-    weatherService = new WeatherServiceImpl(vertx);
+    DepComponent component = DaggerDepComponent.create();
+    weatherService = component.buildWeatherServiceImpl();
+//    weatherService = new WeatherServiceImpl(vertx);
+    FieldUtils.writeField(weatherService, "vertx", vertx, true);
     FieldUtils.writeField(weatherService, "dal", dal, true);
   }
   @Test

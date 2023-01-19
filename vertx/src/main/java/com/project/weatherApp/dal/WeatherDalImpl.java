@@ -11,14 +11,16 @@ public class WeatherDalImpl implements WeatherDal {
   MySqlConnection mySqlConnection;
   Vertx vertx;
   @Inject
-  public WeatherDalImpl(MySqlConnection mySqlConnection){
-    this.vertx = Vertx.currentContext().owner();
+  public WeatherDalImpl(Vertx vertx, MySqlConnection mySqlConnection){
+    this.vertx = vertx;
+    // this.vertx = Vertx.currentContext() == null ? Vertx.vertx():Vertx.currentContext().owner();
     this.mySqlConnection = mySqlConnection;
   }
-  public WeatherDalImpl(Vertx vertx) {
-    this.vertx = vertx;
-    mySqlConnection = new MySqlConnection(vertx);
-  }
+//  @Inject
+//  public WeatherDalImpl(Vertx vertx) {
+//    this.vertx = vertx;
+//    mySqlConnection = new MySqlConnection(vertx);
+//  }
   @Override
   public Single<RowSet<Row>> query(String queryString) {
     SqlClient sqlClient = mySqlConnection.getClient();

@@ -1,6 +1,7 @@
 package com.project.weatherApp;
 
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.junit5.Checkpoint;
 import io.vertx.junit5.Timeout;
@@ -52,20 +53,27 @@ public class TestMainVerticle {
       ));
     }
   }
-
+  // TODO: add body to request
   @Test
-  @DisplayName("Test 2- get")
+  @DisplayName("Test 2- put")
   @Timeout(5000)
   void verticle_put(Vertx vertx, VertxTestContext testContext) throws Throwable {
-    Checkpoint requestSent = testContext.checkpoint(2);
-    Checkpoint responseReceived = testContext.checkpoint(2);
+    Checkpoint requestSent = testContext.checkpoint(1);
+    Checkpoint responseReceived = testContext.checkpoint(1);
     WebClient webClient = WebClient.create(vertx);
-
+    JsonObject jsonObject = new JsonObject();
+    jsonObject.put("id", "1278609");
+    jsonObject.put("name", "Anekal");
+    jsonObject.put("lat", "77.1");
+    jsonObject.put("lon", "12.7");
+    jsonObject.put("country_code", "IN");
+    jsonObject.put("weather", "clear");
+    jsonObject.put("temp", "298.85");
     List<Pair<Float, Float>> locations = new ArrayList<Pair<Float, Float>>();
-    locations.add(new Pair(1.0, 2.0));
-    locations.add(new Pair(3.0, 5.0));
+    locations.add(new Pair(77.1, 12.7));
     for (Pair<Float, Float> p:locations){
-      webClient.put(8080, "localhost", String.format("/weatherApp/v1/weather?lat=%s&lon=%s", p.getFirst(), p.getSecond())).send(testContext.succeeding(
+      webClient.put(8080, "localhost", String.format("/weatherApp/v1/weather?lat=%s&lon=%s", p.getFirst(), p.getSecond()))
+        .sendJsonObject(jsonObject, testContext.succeeding(
         resp -> {
           requestSent.flag();
           testContext.verify(() -> {

@@ -1,5 +1,7 @@
 package com.project.weatherApp.dal;
 
+import com.project.weatherApp.di.DaggerDepComponent;
+import com.project.weatherApp.di.DepComponent;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +39,10 @@ public class WeatherDalImplTest {
   @BeforeEach
   public void setUp() throws IllegalAccessException {
     MockitoAnnotations.openMocks(this);
-    weatherDal = new WeatherDalImpl(vertx);
+    DepComponent component = DaggerDepComponent.create();
+    weatherDal = component.buildWeatherDalImpl();
+//    weatherService = new WeatherServiceImpl(vertx);
+    FieldUtils.writeField(weatherDal, "vertx", vertx, true);
     FieldUtils.writeField(weatherDal, "mySqlConnection", mySqlConnection, true);
   }
   @Test

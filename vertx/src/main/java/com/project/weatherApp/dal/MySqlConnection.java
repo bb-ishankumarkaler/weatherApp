@@ -30,7 +30,6 @@ public class MySqlConnection {
 
     poolOptions = new PoolOptions().setMaxSize(5);
   }
-
   @Inject
   public MySqlConnection(Vertx vertx) {
     this.vertx = vertx;
@@ -40,6 +39,7 @@ public class MySqlConnection {
     this.vertx = Vertx.currentContext().owner();
     init();
   }
+
   public SqlClient getClient(){
     return MySQLPool.client(vertx, connectOptions, poolOptions);
   }

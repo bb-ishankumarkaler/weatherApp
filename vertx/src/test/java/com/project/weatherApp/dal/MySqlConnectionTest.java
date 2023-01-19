@@ -1,5 +1,7 @@
 package com.project.weatherApp.dal;
 
+import com.project.weatherApp.di.DaggerDepComponent;
+import com.project.weatherApp.di.DepComponent;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +39,10 @@ public class MySqlConnectionTest {
   @BeforeEach
   public void setUp() throws IllegalAccessException {
     MockitoAnnotations.openMocks(this);
-    mySqlConnection = new MySqlConnection(vertx);
+    // mySqlConnection = new MySqlConnection(vertx);
+    DepComponent component = DaggerDepComponent.create();
+    mySqlConnection = component.buildMySqlConnection();
+    FieldUtils.writeField(mySqlConnection, "vertx", vertx, true);
     FieldUtils.writeField(mySqlConnection, "dotenv", dotenv, true);
     FieldUtils.writeField(mySqlConnection, "connectOptions", connectOptions, true);
     FieldUtils.writeField(mySqlConnection, "poolOptions", poolOptions, true);

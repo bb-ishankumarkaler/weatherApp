@@ -3,6 +3,8 @@ package com.project.weatherApp;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.project.weatherApp.dal.WeatherDal;
+import com.project.weatherApp.di.DaggerDepComponent;
+import com.project.weatherApp.di.DepComponent;
 import com.project.weatherApp.service.WeatherService;
 import io.reactivex.Single;
 import io.vertx.core.http.HttpMethod;
@@ -31,8 +33,11 @@ class ControllerTest {
   @BeforeEach
   public void setup() throws IllegalAccessException {
     MockitoAnnotations.openMocks(this);
-    controller = new Controller(vertx);
-    FieldUtils.writeField(controller, "weatherDal", weatherDal, true);
+    DepComponent component = DaggerDepComponent.create();
+    controller = component.buildController();
+    // controller = new Controller(vertx);
+    FieldUtils.writeField(controller, "vertx", vertx, true);
+    // FieldUtils.writeField(controller, "weatherDal", weatherDal, true);
     FieldUtils.writeField(controller, "weatherService", weatherService, true);
   }
 
@@ -69,7 +74,6 @@ class ControllerTest {
   @Test
   public void testSearchCalled() throws IllegalAccessException {
     Controller controller1 = Mockito.mock(Controller.class);
-    FieldUtils.writeField(controller1, "weatherDal", weatherDal, true);
     FieldUtils.writeField(controller1, "weatherService", weatherService, true);
     FieldUtils.writeField(controller1, "vertx", vertx, true);
     Mockito.doCallRealMethod().when(controller1).handle(request);
