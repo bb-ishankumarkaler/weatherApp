@@ -4,6 +4,10 @@ import com.project.weatherApp.di.DaggerDepComponent;
 import com.project.weatherApp.di.DepComponent;
 import io.vertx.reactivex.core.AbstractVerticle;
 import io.vertx.core.Promise;
+import io.vertx.reactivex.ext.web.Router;
+import io.vertx.reactivex.ext.web.RoutingContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // TODO: Find if we really need commented code(and perhaps commented imports) anymore :)
 // Commented code Imports
@@ -27,18 +31,19 @@ import io.vertx.core.Promise;
 // :: table columns -> id(pri) name lat lon country_code weather temperature
 
 public class MainVerticle extends AbstractVerticle {
+  private static final Logger LOGGER = LoggerFactory.getLogger(MainVerticle.class);
+
   private final String url = "api.openweathermap.org";
   // TODO: key storage
   private String API_KEY;
-
   @Override
   public void start(Promise<Void> startPromise) throws Exception {
     DepComponent component = DaggerDepComponent.create();
     Controller controller = component.buildController();
     // Controller controller = new Controller(vertx);
-    vertx.createHttpServer().requestHandler(controller).listen(8080, httpServerAsyncResult -> {
+    vertx.createHttpServer().requestHandler(controller.router).listen(8080, httpServerAsyncResult -> {
       if (httpServerAsyncResult.succeeded()) {
-        System.out.println("Starting server at port 8080");
+        LOGGER.info("Starting server at port 8080");
         startPromise.complete();
       } else {
         startPromise.fail("Http server start failed: " + httpServerAsyncResult.cause());

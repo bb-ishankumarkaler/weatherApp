@@ -76,7 +76,7 @@ class ControllerTest {
     Controller controller1 = Mockito.mock(Controller.class);
     FieldUtils.writeField(controller1, "weatherService", weatherService, true);
     FieldUtils.writeField(controller1, "vertx", vertx, true);
-    Mockito.doCallRealMethod().when(controller1).handle(request);
+    // Mockito.doCallRealMethod().when(controller1).handle(request);
     String searchURI = "http://localhost:8080/weatherApp/v1/search/weather?lat=20&lon=20";
     Mockito.when(request.method()).thenReturn(HttpMethod.GET);
     Mockito.when(controller1.getLatLon(request)).thenReturn(new Pair<>("20", "20"));

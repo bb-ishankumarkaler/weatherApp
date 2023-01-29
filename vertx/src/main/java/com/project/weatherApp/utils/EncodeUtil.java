@@ -1,22 +1,27 @@
 package com.project.weatherApp.utils;
 
+import com.project.weatherApp.MainVerticle;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.http.HttpServerRequest;
 import io.vertx.reactivex.sqlclient.Row;
 import io.vertx.reactivex.sqlclient.RowSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class EncodeUtil {
+  static final Logger LOGGER = LoggerFactory.getLogger(EncodeUtil.class);
+
   public static String getParam(HttpServerRequest request, String param){
     assert request != null;
     return (request.params() == null) ? null : request.params().get(param);
   }
   public static String rowSetToString(RowSet<Row> rSet) {
     assert rSet != null : "rowSetToString(null rSet)";
-    System.out.println(rSet);
+    LOGGER.debug(String.valueOf(rSet));
     JsonArray jsonArray = new JsonArray();
     for (Row row : rSet) {
       JsonObject jsonObject = row.toJson();
@@ -46,7 +51,7 @@ public class EncodeUtil {
 
   public static LinkedHashMap<String, String> getDataMap(JsonObject jsonBody) {
     assert jsonBody != null;
-    System.out.println("Json body to map: " + jsonBody);
+    LOGGER.debug("Json body to map: " + jsonBody.encodePrettily());
     // search for raw data types java
     LinkedHashMap<String, String> dataMap = new LinkedHashMap<String, String>();
     // Get data fields fron JSON
@@ -66,7 +71,7 @@ public class EncodeUtil {
     for (Map.Entry<String, String> entry : dataMap.entrySet()) {
       String key = entry.getKey();
       String value = entry.getValue();
-      System.out.printf("%s, %s%n", key, value);
+      LOGGER.debug(String.format("%s, %s%n", key, value));
       json.put(key, value);
     }
     return json;

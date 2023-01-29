@@ -1,5 +1,6 @@
 package com.project.weatherApp.service;
 
+import com.project.weatherApp.MainVerticle;
 import com.project.weatherApp.dal.WeatherDal;
 import com.project.weatherApp.di.DaggerDepComponent;
 import com.project.weatherApp.di.DepComponent;
@@ -10,11 +11,15 @@ import io.vertx.reactivex.ext.web.client.WebClient;
 import io.vertx.reactivex.ext.web.codec.BodyCodec;
 import com.project.weatherApp.utils.EncodeUtil;
 import io.reactivex.Single;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.LinkedHashMap;
 
 public class WeatherServiceImpl implements WeatherService{
+  static final Logger LOGGER = LoggerFactory.getLogger(MainVerticle.class);
+
   Vertx vertx;
   WeatherDal dal;
   @Inject

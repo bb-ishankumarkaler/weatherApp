@@ -26,9 +26,10 @@ public class MySqlConnection {
       .setDatabase(dotenv.get("SQL_DATABASE"))
       .setUser(dotenv.get("SQL_USER"))
       .setPassword(dotenv.get("SQL_PASSWORD"))
-      .setConnectTimeout(dotenv.get("SQL_TIMEOUT") == null ? 3000 : Integer.parseInt(dotenv.get("SQL_TIMEOUT")));
+      .setConnectTimeout(dotenv.get("SQL_TIMEOUT") == null ? 3000 : Integer.parseInt(dotenv.get("SQL_TIMEOUT")))
+      .setConnectTimeout(1000);
 
-    poolOptions = new PoolOptions().setMaxSize(5);
+    poolOptions = new PoolOptions().setMaxSize(5).setMaxWaitQueueSize(1000);
   }
   @Inject
   public MySqlConnection(Vertx vertx) {
